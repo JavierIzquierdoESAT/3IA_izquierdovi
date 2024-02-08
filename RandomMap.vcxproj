@@ -156,6 +156,9 @@
   <ItemGroup>
     <ClCompile Include="RandomMap.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="MazeDigger.hpp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
