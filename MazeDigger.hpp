@@ -98,7 +98,8 @@ public:
   void print() const{
     for (int y = 0; y < h_; ++y) {
       for (int x = 0; x < w_; ++x) {
-        std::cout << " " << maze_[x + y * w_] << " ";
+        char t = maze_[x + y * w_] == 0 ? ' ' : '+';
+        std::cout << " " << t << " ";
       }
       std::cout << "\n";
     }
