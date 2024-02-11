@@ -1,4 +1,4 @@
-#include "Replace.hpp"
+#include "grid.hpp"
 
 Maze maze(5, 5, 5);
 int main(int argc, char* argv[]) {
