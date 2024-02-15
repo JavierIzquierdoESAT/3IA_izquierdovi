@@ -6,7 +6,7 @@
 
 class Maze {
 public:
-  Maze(int w, int h, int total);
+  Maze(int w, int h, int total, int special_rooms);
 
   int getPos(int x, int y) const;
   Room& getRoom(int x, int y);
@@ -27,6 +27,8 @@ public:
 private:
   int width, height;
   int start_x, start_y;
+
+  int special_rooms;
   int room_count;
   std::vector<Room> maze;
   std::queue<Room*> queue;

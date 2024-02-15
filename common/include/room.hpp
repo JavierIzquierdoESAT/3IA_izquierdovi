@@ -10,6 +10,7 @@ struct Room {
   
   std::bitset<4> outDoors;
   std::bitset<4> freePaths;
+  bool special = false;
   int x = 0;
   int y = 0;
 };

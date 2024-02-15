@@ -1,7 +1,14 @@
 #include "room.hpp"
 
 void Room::randomize(int comming_dir) {
-  outDoors = 0 + rand() % 32;
+  int path_count = 1 + rand() % 4;
+  outDoors.reset();
+  for (int i = 0; i < path_count; ++i) {
+    int pos = 0;
+    while (outDoors[pos]) {pos++;}
+    outDoors[pos] = true;
+    outDoors <<= rand() % 4;
+  }
   freePaths = outDoors;
   if (comming_dir != -1) {
     outDoors[comming_dir] = true;

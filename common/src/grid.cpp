@@ -3,10 +3,11 @@
 
 #include <iostream>
 
-Maze::Maze(int w, int h, int total): width(w),
+Maze::Maze(int w, int h, int total, int special_room): width(w),
                                      height(h),
                                      start_x(0 + rand() % w),
                                      start_y(0 + rand() % h),
+                                     special_rooms(3),
                                      room_count(total) {
   for (int i = 0; i < w * h; ++i) {
     maze.emplace_back(Room());
@@ -50,59 +51,46 @@ void Maze::print() const {
     //top
     for (int x = 0; x < width; ++x) {
       std::string t;
-      if(maze.at(getPos(x, y)).outDoors[0]) t += "   |   ";
+      if (maze.at(getPos(x, y)).outDoors[0]) t += "   |   ";
       else t += "       ";
-      std::cout << t ;
+      std::cout << t;
     }
     std::cout << "\n";
     //middle
     for (int x = 0; x < width; ++x) {
       std::string t;
-      if(maze.at(getPos(x, y)).outDoors[3]) t += "---";
-      else t+= "   ";
-      switch (maze.at(getPos(x, y)).outDoors.count()) {
-        case 0:
-          t += '0';
-        break;
-        case 1:
-          t += '1';
-        break;
-        case 2:
-          t += '2';
-        break;
-        case 3:
-          t += '3';
-        break;
-        case 4:
-          t += '4';
-        break;
-        default:
-          break;
-      }
-      if(maze.at(getPos(x, y)).outDoors[1]) t += "---";
+      if (maze.at(getPos(x, y)).outDoors[3]) t += "---";
       else t += "   ";
-      
-      std::cout << t ;
+      if(maze.at(getPos(x, y)).outDoors.none()){t += ' ';}
+      else if (maze.at(getPos(x, y)).special) {t += '*';}
+      else {t += "&";}
+      if (maze.at(getPos(x, y)).outDoors[1]) t += "---";
+      else t += "   ";
+
+      std::cout << t;
     }
     std::cout << "\n";
 
     //bottom
     for (int x = 0; x < width; ++x) {
       std::string t = "";
-      if(maze.at(getPos(x, y)).outDoors[2]) t += "   |   ";
+      if (maze.at(getPos(x, y)).outDoors[2]) t += "   |   ";
       else t += "       ";
-      std::cout << t ;
+      std::cout << t;
     }
     std::cout << "\n";
   }
   std::cout << "----------------------------------------------" << std::endl;
 }
 void Maze::Generate() {
+  srand (time(NULL));
+  
   int curr_x = start_x;
   int curr_y = start_y;
 
   placeRoom(curr_x, curr_y, -1);
-  while (!queue.empty()) {
+  for (int i = 1; i < room_count; ++i) {
+    if(queue.empty()) break;//update
     print();
     //getting the last available form the queue
     bool empty = false;
@@ -128,6 +116,27 @@ void Maze::Generate() {
 
     placeRoom(curr_x, curr_y, Room::getOpositeDir(next_dir));
   }
+  print();
+  //close maze
+  for (auto& room : maze) {
+    if(room.freePaths.any()) {
+      room.outDoors &= ~room.freePaths;
+      room.freePaths.reset();
+      print();
+    }
+  }
+
+  //set special rooms
+  int left = special_rooms;
+  for (auto& room : maze) {
+    if(room.outDoors.count() == 1) {
+      room.special = true;
+      left--;
+    }
+    if(left <= 0) break;
+  }
+  print();
+  
 }
 bool Maze::roomCanFit(Room& room, int room_x, int room_y) {
   bool res = true;
