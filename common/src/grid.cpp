@@ -1,5 +1,6 @@
 #include "grid.hpp"
 #include "room.hpp"
+#include "esat/sprite.h"
 
 #include <iostream>
 
@@ -84,6 +85,13 @@ void Maze::print() const {
 }
 void Maze::Generate() {
   srand (time(NULL));
+
+  empty = esat::SpriteFromFile("../../../assets/Empty.png");
+  dead_end = esat::SpriteFromFile("../../../assets/DeadEnd.png");
+  turn = esat::SpriteFromFile("../../../assets/Turn.png");
+  split = esat::SpriteFromFile("../../../assets/Split.png");
+  cross = esat::SpriteFromFile("../../../assets/Cross.png");
+  corridor = esat::SpriteFromFile("../../../assets/Corridor.png");
   
   int curr_x = start_x;
   int curr_y = start_y;
@@ -178,4 +186,69 @@ void Maze::placeRoom(int x, int y, int comming_dir) {
   while (!roomCanFit(current, x, y));
 
   queue.push(&current);
+}
+
+
+void Maze::setSprites() {
+  for (int y = 0; y < height; ++y) {
+    for (int x = 0; x < width; ++x) {
+      auto& room = maze.at(getPos(x, y));
+      int i = 0;
+      std::bitset<4> mask;
+      std::uint8_t mask_i;
+      switch (room.outDoors.count()) {
+        case 1:
+          room.sprite = dead_end;
+          i = 0;
+          while (!room.outDoors[i]) {i++;}
+          room.rotations = i;
+        break;
+        case 2:
+          mask = 5;
+          if(room.outDoors == mask || room.outDoors == mask<<1) {
+            room.sprite = corridor;
+            if(room.outDoors[0] != 1) room.rotations = 1;
+          } else {
+            room.sprite = turn;
+            mask_i = 3;
+            mask = mask_i;
+            i = 0;
+            while(room.outDoors != mask && i<3) {
+              i++;
+              mask = std::rotl(mask_i, i);
+            }
+            room.rotations = i;
+          }
+          break;
+        case 3:
+          room.sprite = split;
+          mask = 7;
+          room.rotations = 0;
+          if(room.outDoors != mask) {
+            room.rotations = 1;
+            mask<<=1;
+            if(room.outDoors != mask) {
+              room.rotations = 2;
+              mask = 13;
+              if(room.outDoors != mask) {
+                room.rotations = 3;
+              }
+            }
+          }
+
+          break;
+        case 4:
+          room.sprite = cross;
+          break;
+        default:
+          room.sprite = empty;
+          break;
+      }
+    }
+  }
+}
+void Maze::clear() {
+  for (int i = 0; i < width * height; ++i) {
+    maze.at(i) = Room();
+  }
 }

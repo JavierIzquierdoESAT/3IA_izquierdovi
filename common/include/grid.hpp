@@ -3,6 +3,7 @@
 #include "room.hpp"
 #include <queue>
 #include <vector>
+#include <esat/sprite.h>
 
 class Maze {
 public:
@@ -24,12 +25,25 @@ public:
 
   void placeRoom(int x, int y, int comming_dir);
 
-private:
-  int width, height;
-  int start_x, start_y;
+  void setSprites();
 
+  void clear();
+
+
+  esat::SpriteHandle empty;
+  esat::SpriteHandle dead_end;
+  esat::SpriteHandle corridor;
+  esat::SpriteHandle turn;
+  esat::SpriteHandle split;
+  esat::SpriteHandle cross;
+  int width, height;
+  std::vector<Room> maze;
+  
+private:
+  int start_x, start_y;
   int special_rooms;
   int room_count;
-  std::vector<Room> maze;
   std::queue<Room*> queue;
+
+
 };

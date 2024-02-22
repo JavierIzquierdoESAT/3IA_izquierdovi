@@ -2,21 +2,46 @@
 #include "esat/sprite.h"
 #include "esat/draw.h"
 #include "esat/window.h"
+#include "esat/input.h"
 #include "esat/helpers.h"
 #include "esat/time.h"
 
+void render(Maze& maze) {
+  for (int y = 0; y < maze.height; ++y) {
+    for (int x = 0; x < maze.width; ++x) {
+      Room& room = maze.getRoom(x, y);
+      esat::SpriteTransform t = esat::SpriteTransform();
+      SpriteTransformInit(&t);
+      t.x = static_cast<float>(x * 32);
+      t.y = static_cast<float>(y * 32);
+      t.scale_x = 0.125f;
+      t.scale_y = 0.125f;
+
+      if(room.rotations == 1) {
+        t.angle = 3.14f/2.0f;
+        t.x+= 32;
+      }
+      else if(room.rotations ==2) {
+        t.angle = 3.14f;
+        t.x += 32;
+        t.y += 32;
+      }
+      else if(room.rotations == 3) {
+        t.angle = -3.14f/2.0f;
+        t.y+= 32;
+      }
+
+      esat::DrawSprite(room.sprite, t);
+    }
+  }
+}
+
 Maze maze(5, 5, 10, 2);
-char ** a;
 int esat::main(int, char **) {
   WindowInit(500, 500);
-
-  SpriteHandle empty = SpriteFromFile("../../../assets/Empty.png");
-  SpriteHandle dead_end = SpriteFromFile("../../../assets/DeadEnd.png");
-  SpriteHandle corridor = SpriteFromFile("../../../assets/Corridor.png");
-  SpriteHandle turn = SpriteFromFile("../../../assets/Turn.png");
-  SpriteHandle split = SpriteFromFile("../../../assets/Split.png");
-  SpriteHandle cross = SpriteFromFile("../../../assets/Cross.png");
+  
   maze.Generate();
+  maze.setSprites();
 
   
   SpriteTransform t = SpriteTransform();
@@ -27,9 +52,16 @@ int esat::main(int, char **) {
   t.scale_y = 0.125f;
   t.angle = 3.14f;
   while (WindowIsOpened()) {
+
+    if(IsSpecialKeyDown(kSpecialKey_Space)) {
+      maze.clear();
+      maze.Generate();
+      maze.setSprites();
+    }
+    
     DrawBegin();
     DrawClear(0.0f, 0.0f, 0.0f);
-    DrawSprite(dead_end, t);
+    render(maze);
     DrawEnd();
     WindowFrame();
   }
