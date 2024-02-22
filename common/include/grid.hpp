@@ -36,6 +36,7 @@ public:
   esat::SpriteHandle turn;
   esat::SpriteHandle split;
   esat::SpriteHandle cross;
+  esat::SpriteHandle start;
   int width, height;
   std::vector<Room> maze;
   

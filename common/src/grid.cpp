@@ -92,6 +92,7 @@ void Maze::Generate() {
   split = esat::SpriteFromFile("../../../assets/Split.png");
   cross = esat::SpriteFromFile("../../../assets/Cross.png");
   corridor = esat::SpriteFromFile("../../../assets/Corridor.png");
+  start = esat::SpriteFromFile("../../../assets/Start.png");
   
   int curr_x = start_x;
   int curr_y = start_y;
@@ -198,7 +199,8 @@ void Maze::setSprites() {
       std::uint8_t mask_i;
       switch (room.outDoors.count()) {
         case 1:
-          room.sprite = dead_end;
+          if(room.special) room.sprite = start;
+          else room.sprite = dead_end;
           i = 0;
           while (!room.outDoors[i]) {i++;}
           room.rotations = i;
