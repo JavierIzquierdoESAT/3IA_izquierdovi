@@ -2,13 +2,15 @@
 #include <bitset>
 #include <esat/sprite.h>
 
+void RotateLeft(std::bitset<4>& rot, int num);
+void RotateRight(std::bitset<4>& rot, int num);
 
 struct Room {
   Room() = default;
   Room(esat::SpriteHandle sp):sprite(sp){}
   
   void randomize(int comming_dir);
-
+  
   static void getAdyacentPos(int& x, int& y, int dir);
   static int getOpositeDir(const int dir);
 

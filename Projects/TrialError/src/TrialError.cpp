@@ -36,7 +36,7 @@ void render(Maze& maze) {
   }
 }
 
-Maze maze(5, 5, 10, 2);
+Maze maze(10, 10, 30, 2);
 int esat::main(int, char **) {
   WindowInit(500, 500);
   
