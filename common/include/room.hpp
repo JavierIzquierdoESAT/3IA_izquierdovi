@@ -5,6 +5,8 @@
 void RotateLeft(std::bitset<4>& rot, int num);
 void RotateRight(std::bitset<4>& rot, int num);
 
+
+
 struct Room {
   Room() = default;
   Room(esat::SpriteHandle sp):sprite(sp){}

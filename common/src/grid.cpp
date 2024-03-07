@@ -4,15 +4,18 @@
 
 #include <iostream>
 
+#include "room_pool.hpp"
+
 Maze::Maze(int w, int h, int total, int special_room): width(w),
-                                     height(h),
-                                     start_x(0 + rand() % w),
-                                     start_y(0 + rand() % h),
-                                     special_rooms(3),
-                                     room_count(total) {
+                                                       height(h),
+                                                       start_x(0 + rand() % w),
+                                                       start_y(0 + rand() % h),
+                                                       special_rooms(3),
+                                                       room_count(total) {
   for (int i = 0; i < w * h; ++i) {
     maze.emplace_back(Room());
   }
+  RoomPool();
 }
 int Maze::getPos(int x, int y) const {
   return x + y * width;
@@ -87,12 +90,7 @@ void Maze::Generate() {
   srand (time(NULL));
 
   empty = esat::SpriteFromFile("../../../assets/Empty.png");
-  dead_end = esat::SpriteFromFile("../../../assets/DeadEnd.png");
-  turn = esat::SpriteFromFile("../../../assets/Turn.png");
-  split = esat::SpriteFromFile("../../../assets/Split.png");
-  cross = esat::SpriteFromFile("../../../assets/Cross.png");
-  corridor = esat::SpriteFromFile("../../../assets/Corridor.png");
-  start = esat::SpriteFromFile("../../../assets/Start.png");
+
   
   int curr_x = start_x;
   int curr_y = start_y;
@@ -190,6 +188,7 @@ void Maze::placeRoom(int x, int y, int comming_dir) {
 }
 
 
+
 void Maze::setSprites() {
   for (int y = 0; y < height; ++y) {
     for (int x = 0; x < width; ++x) {
@@ -199,8 +198,8 @@ void Maze::setSprites() {
       std::uint8_t mask_i;
       switch (room.outDoors.count()) {
         case 1:
-          if(room.special) room.sprite = start;
-          else room.sprite = dead_end;
+          if(room.special) room.sprite = esat::SpriteFromFile(starting_rooms_[room_pool_.getRandomRoomOfType(kSpecial)].sprite_.c_str());
+          else room.sprite = esat::SpriteFromFile(starting_rooms_[room_pool_.getRandomRoomOfType(kDeadEnd)].sprite_.c_str());;
           i = 0;
           while (!room.outDoors[i]) {i++;}
           room.rotations = i;
@@ -208,10 +207,10 @@ void Maze::setSprites() {
         case 2:
           mask = 5;
           if(room.outDoors == mask || room.outDoors == mask<<1) {
-            room.sprite = corridor;
+            room.sprite = esat::SpriteFromFile(starting_rooms_[room_pool_.getRandomRoomOfType(kCorridor)].sprite_.c_str());;
             if(room.outDoors[0] != 1) room.rotations = 1;
           } else {
-            room.sprite = turn;
+            room.sprite = esat::SpriteFromFile(starting_rooms_[room_pool_.getRandomRoomOfType(kTurn)].sprite_.c_str());;
             mask_i = 3;
             mask = mask_i;
             i = 0;
@@ -223,7 +222,7 @@ void Maze::setSprites() {
           }
           break;
         case 3:
-          room.sprite = split;
+          room.sprite = esat::SpriteFromFile(starting_rooms_[room_pool_.getRandomRoomOfType(kSplit)].sprite_.c_str());;
           mask = 7;
           room.rotations = 0;
           if(room.outDoors != mask) {
@@ -240,7 +239,7 @@ void Maze::setSprites() {
 
           break;
         case 4:
-          room.sprite = cross;
+          room.sprite = esat::SpriteFromFile(starting_rooms_[room_pool_.getRandomRoomOfType(kCross)].sprite_.c_str());;
           break;
         default:
           room.sprite = empty;
