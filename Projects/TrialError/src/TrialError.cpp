@@ -39,6 +39,9 @@ void render(Maze& maze) {
 Maze maze(10, 10, 30, 2);
 int esat::main(int, char **) {
   WindowInit(500, 500);
+
+  //get random pos
+  //get random room layout
   
   maze.Generate();
   maze.setSprites();

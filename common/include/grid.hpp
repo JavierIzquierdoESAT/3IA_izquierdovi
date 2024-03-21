@@ -33,8 +33,9 @@ public:
 
   void clear();
 
-
+  //crap
   esat::SpriteHandle empty;
+  
   int width, height;
   std::vector<Room> maze;
 
@@ -43,7 +44,9 @@ private:
   int special_rooms;
   int room_count;
   std::queue<Room*> queue;
+  
 
-  RoomPool room_pool_;
+  //crap
+  LevelPool room_pool_;
 
 };

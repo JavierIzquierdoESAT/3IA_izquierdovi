@@ -24,7 +24,7 @@ struct Level {
 inline const std::array starting_rooms_ = {
   Level(kSpecial,   "../../../assets/Start.png"),
   Level(kSpecial,   "../../../assets/Boss.png"),
-  Level(kSpecial,   "../../../assets/Market.png"),
+  Level(kSpecial,   "../../../assets/Shop.png"),
   Level(kDeadEnd,   "../../../assets/AEnd.png"),
   Level(kDeadEnd,   "../../../assets/BEnd.png"),
   Level(kDeadEnd,   "../../../assets/CEnd.png"),
@@ -43,10 +43,10 @@ inline const std::array starting_rooms_ = {
 };
 
 
-class RoomPool {
+class LevelPool {
 public:
-  RoomPool();
-  int getRandomRoomOfType(RoomType rt);
+  LevelPool();
+  int getRandomLevelOfType(RoomType rt);
 private:
   std::vector<int> room_type_count_;
   

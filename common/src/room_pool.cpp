@@ -9,13 +9,13 @@
 #include <iostream>
 #include <random>
 
-RoomPool::RoomPool() {
+LevelPool::LevelPool() {
   room_type_count_.assign(kSize, 0);
   for (const auto& room : starting_rooms_) {
     room_type_count_[room.room_type_]++;
   }
 }
-int RoomPool::getRandomRoomOfType(RoomType rt) {
+int LevelPool::getRandomLevelOfType(RoomType rt) {
   unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
   std::default_random_engine random_engine (seed);
   std::uniform_int_distribution distribution(0, room_type_count_[rt]-1);
