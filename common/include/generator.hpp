@@ -1,66 +1,45 @@
 #pragma once
 
-#include <array>
-#include <chrono>
-
-#include "room.hpp"
 #include <queue>
 #include <random>
 #include <vector>
-#include <esat/sprite.h>
 
-#include "room_pool.hpp"
+#include "global.hpp"
 
-struct Vec2 {
-  float x_, y_;
-};
+class RoomLayout;
 
-class Maze {
+class Generator {
 public:
-  Maze(int width, int height, int room_count, int seed = 0) :
-  width_(width), height_(height), room_count(room_count){
-    if(seed == 0) {
-      seed_ = std::chrono::system_clock::now().time_since_epoch().count();
-    }
-    else {
-      seed_ = seed;
-    }
-    random_engine_ =  std::default_random_engine(seed);
-    num_doors_distribution_ = std::discrete_distribution ({1, 1, 1, 97});
-    rotation_distribution_ = std::uniform_int_distribution (1,3);
-  }
-
-  int getPos(int x, int y) const;
-  Room& getRoom(int x, int y);
-  Room& getAdyacentRoom(int x, int y, int direction);
-
-  bool isValid(int x, int y, int comming_dir, bool path_needed);
+  Generator(int width, int height, int room_count, int seed = 0);
   
-
-
-  void Generate();
-
-  bool roomCanFit(Room& room, int room_x, int room_y);
-
-  void placeRoom(int x, int y, int comming_dir);
-  
-
+  bool findNextPosition();
+  bool placeRoom();
   void clear();
   
   
   
-  std::vector<RoomLayout> maze;
+  std::vector<RoomLayout> maze_;
 
 private:
-  int width_, height_;
-  int start_x, start_y;
-  int special_rooms;
-  int room_count;
-  std::queue<RoomLayout*> queue;
+  bool posInGrid(const Vec2<int>& pos) const;
+  RoomLayout& getRoom(const Vec2<int>& pos);
+  bool isPathValid(int direction, bool has_going_path);
+
+  
+  Vec2<int> grid_size_;
+  Vec2<int> start_position_;
+  Vec2<int> current_position_;
+  int last_dir_;
+  int special_room_count_;
+  int room_count_;
+  std::queue<Vec2<int>> room_queue_;
 
   unsigned seed_;
   std::default_random_engine random_engine_;
-  std::discrete_distribution num_doors_distribution_;
-  std::uniform_int_distribution rotation_distribution_;
+  std::discrete_distribution<int> random_door_count_;
+  std::uniform_int_distribution<int> random_rotation_;
+  std::uniform_int_distribution<int> random_x_;
+  std::uniform_int_distribution<int> random_y_;
   
 };
+
