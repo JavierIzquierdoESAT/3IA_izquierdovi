@@ -3,10 +3,8 @@
 #include <queue>
 #include <random>
 #include <vector>
-
+#include "room_layout.hpp"
 #include "global.hpp"
-
-class RoomLayout;
 
 class Generator {
 public:
@@ -14,10 +12,15 @@ public:
   
   bool findNextPosition();
   bool placeRoom();
+
+  void findSpecialRoom();
+  void closeMaze();
+
+  bool ended() const{return room_count_ == curren_room_count_;}
   void clear();
 
   const RoomLayout& getRoom(const Vec2<int>& pos) const;
-  const Vec2<int>& getGridSize() const {return grid_size_;};
+  const Vec2<int>& getGridSize() const {return grid_size_;}
 
   
   
@@ -37,7 +40,9 @@ private:
   int last_dir_;
   int special_room_count_;
   int room_count_;
+  int curren_room_count_;
   std::queue<Vec2<int>> room_queue_;
+  //std::vector<Vec2<int>> special_room_candidates_;
 
   unsigned seed_;
   std::default_random_engine random_engine_;

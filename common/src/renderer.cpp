@@ -13,7 +13,7 @@ void Renderer::FetchRenderer(const Generator& grid) {
   
   for (int y = 0; y < grid_size.y_; ++y) {
     for (int x = 0; x < grid_size.x_; ++x) {
-      const auto& room_layout = grid.getRoom(Vec2(x,y));
+      const auto& room_layout = grid.getRoom(Vec2<int>(x,y));
       int i = 0;
       std::bitset<4> mask;
       switch (room_layout.doors_.count()) {
@@ -59,11 +59,11 @@ void Renderer::FetchRenderer(const Generator& grid) {
   }
 }
 
-
-void Renderer::render() const{
+void Renderer::render(const Generator& grid) const{
   for (int y = 0; y < size_.y_; ++y) {
     for (int x = 0; x < size_.x_; ++x) {
-      Room& room = maze.getRoom(x, y);
+      const RoomLayout& room = grid.getRoom(Vec2<int>(x, y));
+      const Level& level = asset_grid_[x + y * size_.x_];
       esat::SpriteTransform t = esat::SpriteTransform();
       SpriteTransformInit(&t);
       t.x = static_cast<float>(x * 32);
@@ -71,21 +71,24 @@ void Renderer::render() const{
       t.scale_x = 0.125f;
       t.scale_y = 0.125f;
 
-      if(room.rotations == 1) {
+      if(room.getRotations() == 1) {
         t.angle = 3.14f/2.0f;
         t.x+= 32;
       }
-      else if(room.rotations ==2) {
+      else if(room.getRotations() ==2) {
         t.angle = 3.14f;
         t.x += 32;
         t.y += 32;
       }
-      else if(room.rotations == 3) {
+      else if(room.getRotations() == 3) {
         t.angle = -3.14f/2.0f;
         t.y+= 32;
       }
 
-      esat::DrawSprite(room.sprite, t);
+      if(level.sprite_ != "") {
+        esat::SpriteHandle sh = room_pool_.assets_.at(level.sprite_);
+        esat::DrawSprite(sh, t);
+      }
     }
   }
 }

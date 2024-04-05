@@ -3,16 +3,14 @@
 #include <chrono>
 
 #include "grid.hpp"
-#include "room.hpp"
 #include "esat/sprite.h"
-
-#include <iostream>
 #include <random>
 
 LevelPool::LevelPool() {
   room_type_count_.assign(kSize, 0);
-  for (const auto& room : starting_rooms_) {
-    room_type_count_[room.room_type_]++;
+  for (auto starting_room : starting_rooms_) {
+    room_type_count_[starting_room.room_type_]++;
+    assets_.emplace(starting_room.sprite_, esat::SpriteFromFile(starting_room.sprite_.c_str()));
   }
 }
 int LevelPool::getRandomLevelOfType(RoomType rt) {

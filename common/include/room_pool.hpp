@@ -1,6 +1,8 @@
 #pragma once
 
 #include <array>
+#include <list>
+#include <unordered_map>
 #include <vector>
 
 #include "room.hpp"
@@ -49,7 +51,9 @@ class LevelPool {
 public:
   LevelPool();
   int getRandomLevelOfType(RoomType rt);
+  std::unordered_map<std::string, esat::SpriteHandle> assets_;
 private:
   std::vector<int> room_type_count_;
+
   
 };

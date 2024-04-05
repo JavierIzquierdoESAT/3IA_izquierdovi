@@ -18,16 +18,17 @@ Generator::Generator(const int width, const int height,
     last_dir_(-1),
     special_room_count_(0),
     room_count_(room_count),
-    seed_(seed){
+    curren_room_count_(0),
+    seed_(seed) {
   if (seed == 0) {
     seed_ = std::chrono::system_clock::now().time_since_epoch().count();
   }
-  for (int i = 0; i < width*height; ++i) {
+  for (int i = 0; i < width * height; ++i) {
     maze_.emplace_back(RoomLayout());
   }
-  
-  random_engine_ = std::default_random_engine(seed);
-  random_door_count_ = std::discrete_distribution({1,1,1,97});
+
+  random_engine_ = std::default_random_engine(seed_);
+  random_door_count_ = std::discrete_distribution({25,25,25,25});
   random_rotation_ = std::uniform_int_distribution(1, 3);
   random_x_ = std::uniform_int_distribution(0, width - 1);
   random_y_ = std::uniform_int_distribution(0, height - 1);
@@ -35,29 +36,31 @@ Generator::Generator(const int width, const int height,
 
 
 bool Generator::findNextPosition() {
-  if(current_position_ == start_position_) {
+  if (current_position_ == start_position_ && room_queue_.empty()) {
     start_position_.x_ = random_x_(random_engine_);
     start_position_.y_ = random_y_(random_engine_);
     current_position_ = start_position_;
-  }
-  else if(!room_queue_.empty()) {
+  } else if (!room_queue_.empty()) {
     //get room with empty paths
     Vec2<int> base_pos = room_queue_.front();
-    RoomLayout& last_room = getRoom(base_pos);
-    while (last_room.free_doors_.none()) {
+    RoomLayout* last_room = &getRoom(base_pos);
+    while (last_room->free_doors_.none()) {
       room_queue_.pop();
       if (room_queue_.empty()) { return false; }
       base_pos = room_queue_.front();
-      last_room = getRoom(base_pos);
+      last_room = &getRoom(base_pos);
     }
     //find avilable path
     int next_dir = 0;
-    while (!last_room.free_doors_[next_dir]) {
+    while (!last_room->free_doors_[next_dir]) {
       next_dir++;
     }
     current_position_ = getAdjacentPosition(base_pos, next_dir);
     last_dir_ = getOpositeDir(next_dir);
+  } else {
+    return false;
   }
+  if (ended()) return false;
   return true;
 }
 void Generator::clear() {
@@ -67,12 +70,13 @@ void Generator::clear() {
   start_position_.reset();
   current_position_.reset();
   last_dir_ = -1;
+  curren_room_count_ = 0;
 }
 
 const RoomLayout& Generator::getRoom(const Vec2<int>& pos) const {
   return maze_.at(pos.x_ + pos.y_ * grid_size_.x_);
 }
-RoomLayout& Generator::getRoom(const Vec2<int>& pos){
+RoomLayout& Generator::getRoom(const Vec2<int>& pos) {
   return maze_.at(pos.x_ + pos.y_ * grid_size_.x_);
 }
 
@@ -97,7 +101,7 @@ bool Generator::placeRoom() {
     //delete free doors of connected rooms
     for (int i = 0; i < 4; i++) {
       Vec2 go_to = getAdjacentPosition(current_position_, i);
-      if(posInGrid(go_to)) {
+      if (posInGrid(go_to)) {
         RoomLayout& checking_room = getRoom(go_to);
         if (checking_room.doors_[getOpositeDir(i)]) {
           current.free_doors_[i] = false;
@@ -105,14 +109,33 @@ bool Generator::placeRoom() {
         }
       }
     }
+    curren_room_count_++;
     room_queue_.push(current_position_);
-  }
-  else current.reset();
+  } else current.reset();
   return res;
 }
+// void Generator::findSpecialRoomCandidates() {
+//   for (auto& room : maze_) {
+//     if (room.doors_.count() == 1) {
+//       room.special_
+//       
+//       room.doors_ &= ~room.free_doors_;
+//       room.free_doors_.reset();
+//     }
+//   }
+// }
+void Generator::closeMaze() {
+  for (auto& room : maze_) {
+    if (room.free_doors_.any()) {
+      room.doors_ &= ~room.free_doors_;
+      room.free_doors_.reset();
+    }
+  }
+}
+
 bool Generator::isPathValid(int direction, bool has_going_path) {
   Vec2 go_to = getAdjacentPosition(current_position_, direction);
-  
+
   //rooom we want to go to is in bounds
   if (!posInGrid(go_to)) {
     if (has_going_path) return false;
