@@ -6,6 +6,7 @@
 #include "room.hpp"
 
 enum RoomType {
+  kNone = -1,
   kSpecial = 0,
   kDeadEnd,
   kCorridor,
@@ -18,6 +19,7 @@ enum RoomType {
 struct Level {
   RoomType room_type_;
   std::string sprite_;
+  Level():room_type_(kNone), sprite_(""){}
   Level(const RoomType rt, const std::string& sp):room_type_(rt), sprite_(sp) {}
 };
 

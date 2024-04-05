@@ -69,13 +69,16 @@ void Generator::clear() {
   last_dir_ = -1;
 }
 
+const RoomLayout& Generator::getRoom(const Vec2<int>& pos) const {
+  return maze_.at(pos.x_ + pos.y_ * grid_size_.x_);
+}
+RoomLayout& Generator::getRoom(const Vec2<int>& pos){
+  return maze_.at(pos.x_ + pos.y_ * grid_size_.x_);
+}
+
 bool Generator::posInGrid(const Vec2<int>& pos) const {
   return !(pos.x_ < 0 || pos.x_ >= grid_size_.x_ ||
            pos.y_ < 0 || pos.y_ >= grid_size_.y_);
-}
-
-RoomLayout& Generator::getRoom(const Vec2<int>& pos) {
-  return maze_.at(pos.x_ + pos.y_ * grid_size_.x_);
 }
 
 bool Generator::placeRoom() {

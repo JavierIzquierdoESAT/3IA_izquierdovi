@@ -15,16 +15,21 @@ public:
   bool findNextPosition();
   bool placeRoom();
   void clear();
+
+  const RoomLayout& getRoom(const Vec2<int>& pos) const;
+  const Vec2<int>& getGridSize() const {return grid_size_;};
+
   
   
   
-  std::vector<RoomLayout> maze_;
+  
 
 private:
   bool posInGrid(const Vec2<int>& pos) const;
   RoomLayout& getRoom(const Vec2<int>& pos);
   bool isPathValid(int direction, bool has_going_path);
 
+  std::vector<RoomLayout> maze_;
   
   Vec2<int> grid_size_;
   Vec2<int> start_position_;

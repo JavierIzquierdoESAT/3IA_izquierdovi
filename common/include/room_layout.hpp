@@ -13,8 +13,8 @@ public:
                  const std::discrete_distribution<int>& random_distribution);
   void reset();
   bool valid() const {return doors_.any();}
+  int getRotations() const;
   
-  int rotations_ = 0;
   std::bitset<4> doors_;
   std::bitset<4> free_doors_;
   bool special_ = false;

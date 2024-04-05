@@ -6,35 +6,6 @@
 #include "esat/input.h"
 #include "esat/time.h"
 
-void render(Maze& maze) {
-  for (int y = 0; y < maze.height; ++y) {
-    for (int x = 0; x < maze.width; ++x) {
-      Room& room = maze.getRoom(x, y);
-      esat::SpriteTransform t = esat::SpriteTransform();
-      SpriteTransformInit(&t);
-      t.x = static_cast<float>(x * 32);
-      t.y = static_cast<float>(y * 32);
-      t.scale_x = 0.125f;
-      t.scale_y = 0.125f;
-
-      if(room.rotations == 1) {
-        t.angle = 3.14f/2.0f;
-        t.x+= 32;
-      }
-      else if(room.rotations ==2) {
-        t.angle = 3.14f;
-        t.x += 32;
-        t.y += 32;
-      }
-      else if(room.rotations == 3) {
-        t.angle = -3.14f/2.0f;
-        t.y+= 32;
-      }
-
-      esat::DrawSprite(room.sprite, t);
-    }
-  }
-}
 
 Generator generator(10, 10, 30, 2);
 int esat::main(int, char **) {
