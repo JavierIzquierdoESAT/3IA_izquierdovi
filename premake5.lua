@@ -17,5 +17,6 @@ workspace "DungeonGenerator"
 group "Projects"
   include "Projects/Digger"
   include "Projects/TrialError"
+  include "Projects/Isaac"
 group ""
 

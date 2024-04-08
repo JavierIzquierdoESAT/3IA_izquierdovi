@@ -18,6 +18,7 @@ project "Digger"
   includedirs
   {
     "src",
+    "include",
     "%{IncludeDirs.ESAT}",
     "%{IncludeDirs.Common}",
   }
@@ -26,6 +27,7 @@ project "Digger"
   {
     "%{IncludeDirs.Common}/**.hpp",
     "%{SourceCode.Common}/**.*",
+    "include/**.*",
     "src/**.*",
     "premake5.lua"
   }

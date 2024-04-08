@@ -1,4 +1,4 @@
-project "TrialError"
+project "Isaac"
   kind "ConsoleApp"
   language "C++"
   cppdialect "C++20"
@@ -20,7 +20,7 @@ project "TrialError"
     "src",
     "include",
     "%{IncludeDirs.ESAT}",
-    "%{IncludeDirs.Common}",
+    "%{IncludeDirs.Common}"
   }
   
   files
