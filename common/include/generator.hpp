@@ -13,7 +13,7 @@ public:
   bool findNextPosition();
   bool placeRoom();
 
-  void findSpecialRoom();
+  void findSpecialRoomCandidates();
   void closeMaze();
 
   bool ended() const{return room_count_ == curren_room_count_;}
@@ -42,7 +42,7 @@ private:
   int room_count_;
   int curren_room_count_;
   std::queue<Vec2<int>> room_queue_;
-  //std::vector<Vec2<int>> special_room_candidates_;
+  std::vector<Vec2<int>> special_room_candidates_;
 
   unsigned seed_;
   std::default_random_engine random_engine_;

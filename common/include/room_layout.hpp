@@ -3,7 +3,6 @@
 #include <bitset>
 #include <random>
 
-#include "global.hpp"
 
 class RoomLayout {
 public:

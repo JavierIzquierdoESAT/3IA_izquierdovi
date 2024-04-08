@@ -32,6 +32,13 @@ inline Vec2<int> getAdjacentPosition(const Vec2<int>& pos, int direction) {
   return res;
 }
 
+inline int DistanceBetweenPoints(Vec2<int> a, Vec2<int> b) {
+  int x = (b.x_ - a.x_) * (b.x_ - a.x_);
+  int y = (b.y_ - a.y_) * (b.y_ - a.y_);
+  return x + y;
+}
+
+
 inline int getOpositeDir(const int dir) {
   int res = -1;
   switch (dir) {

@@ -1,11 +1,9 @@
 #pragma once
 
 #include <array>
-#include <list>
 #include <unordered_map>
 #include <vector>
-
-#include "room.hpp"
+#include <esat/sprite.h>
 
 enum RoomType {
   kNone = -1,

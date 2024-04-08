@@ -1,8 +1,6 @@
 #include "room_pool.hpp"
 
 #include <chrono>
-
-#include "grid.hpp"
 #include "esat/sprite.h"
 #include <random>
 

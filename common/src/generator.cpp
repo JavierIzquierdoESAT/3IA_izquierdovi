@@ -1,5 +1,6 @@
 #include "generator.hpp"
 
+#include <array>
 #include <chrono>
 #include <queue>
 
@@ -67,10 +68,12 @@ void Generator::clear() {
   for (auto& room_layout : maze_) {
     room_layout.reset();
   }
+  special_room_candidates_.clear();
   start_position_.reset();
   current_position_.reset();
   last_dir_ = -1;
   curren_room_count_ = 0;
+  
 }
 
 const RoomLayout& Generator::getRoom(const Vec2<int>& pos) const {
@@ -114,16 +117,43 @@ bool Generator::placeRoom() {
   } else current.reset();
   return res;
 }
-// void Generator::findSpecialRoomCandidates() {
-//   for (auto& room : maze_) {
-//     if (room.doors_.count() == 1) {
-//       room.special_
-//       
-//       room.doors_ &= ~room.free_doors_;
-//       room.free_doors_.reset();
-//     }
-//   }
-// }
+void Generator::findSpecialRoomCandidates() {
+  for (int y = 0; y < grid_size_.y_; ++y) {
+    for (int x = 0; x < grid_size_.x_; ++x) {
+      if(getRoom(Vec2<int>(x, y)).doors_.count() == 1 ) {
+        special_room_candidates_.push_back(Vec2<int>(x,y));
+      }
+    }
+  }
+
+  std::array<Vec2<int>, 3> specials;
+  int res = 0;
+  for (auto point1 : special_room_candidates_) {
+    for (auto point2 : special_room_candidates_) {
+      int distance = DistanceBetweenPoints(point1, point2);
+      if(distance >= res) {
+        res = distance;
+        specials[0] = point1;
+        specials[2] = point2;
+      }
+    }
+  }
+  float ress = 0;
+  for (auto point : special_room_candidates_) {
+    int d1 = DistanceBetweenPoints(specials[0], point);
+    int d2 = DistanceBetweenPoints(specials[2], point);
+    float distance =
+      std::sqrtf(static_cast<float>(d1)) + std::sqrtf(static_cast<float>(d2));
+    if(distance >= ress) {
+      ress = distance;
+      specials[1] = point;
+    }
+  }
+
+  for (auto special : specials) {
+    getRoom(special).special_ = true;
+  }
+}
 void Generator::closeMaze() {
   for (auto& room : maze_) {
     if (room.free_doors_.any()) {

@@ -1,20 +1,19 @@
 #include "room_layout.hpp"
-#include "room.hpp"
 
-// void RotateLeft(std::bitset<4>& rot, int num) {
-//   for (int i = 0; i < num; ++i) {
-//     bool set_first = rot[3]?true:false;
-//     rot <<= 1;
-//     if(set_first) rot[0] = true;
-//   }
-// }
-// void RotateRight(std::bitset<4>& rot, int num) {
-//   for (int i = 0; i < num; ++i) {
-//     bool set_first = rot[0]?true:false;
-//     rot >>= 1;
-//     if(set_first) rot[3] = true;
-//   }
-// }
+void RotateLeft(std::bitset<4>& rot, int num) {
+  for (int i = 0; i < num; ++i) {
+    bool set_first = rot[3]?true:false;
+    rot <<= 1;
+    if(set_first) rot[0] = true;
+  }
+}
+void RotateRight(std::bitset<4>& rot, int num) {
+  for (int i = 0; i < num; ++i) {
+    bool set_first = rot[0]?true:false;
+    rot >>= 1;
+    if(set_first) rot[3] = true;
+  }
+}
 
 void RoomLayout::randomize(int in_direction,
                  std::default_random_engine& random_engine,
