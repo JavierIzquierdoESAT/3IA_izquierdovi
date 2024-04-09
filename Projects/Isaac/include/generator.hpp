@@ -22,10 +22,10 @@ public:
   bool ended() const{return room_count_ == curren_room_count_;}
   void clear();
 
+  Grid grid_;
 private:
   bool isPathValid(int direction, bool has_going_path);
 
-  Grid grid_;
   
   Vec2<int> start_position_;
   Vec2<int> current_position_;

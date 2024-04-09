@@ -19,11 +19,11 @@ public:
   RoomLayout& getRoom(const Vec2<int>& pos);
   
   const Vec2<int>& getGridSize() const {return grid_size_;}
+  bool posInGrid(const Vec2<int>& pos) const;
 
   void reset();
 
 private:
-  bool posInGrid(const Vec2<int>& pos) const;
   
   Vec2<int> grid_size_;
   std::vector<RoomLayout> grid_;

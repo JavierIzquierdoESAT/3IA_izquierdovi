@@ -5,7 +5,8 @@
 #include "generator.hpp"
 #include "room_layout.hpp"
 
-void Renderer::FetchRenderer(const Generator& grid) {
+void Renderer::FetchRenderer(Generator& generator) {
+  Grid grid = generator.grid_;
   auto grid_size = grid.getGridSize();
   size_ = grid_size;
   asset_grid_.clear();
@@ -59,7 +60,8 @@ void Renderer::FetchRenderer(const Generator& grid) {
   }
 }
 
-void Renderer::render(const Generator& grid) const{
+void Renderer::render(Generator& generator) const{
+  Grid& grid = generator.grid_;
   for (int y = 0; y < size_.y_; ++y) {
     for (int x = 0; x < size_.x_; ++x) {
       const RoomLayout& room = grid.getRoom(Vec2<int>(x, y));

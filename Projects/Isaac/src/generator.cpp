@@ -54,26 +54,23 @@ bool Generator::placeRoom() {
   bool res = true;
   //check for all adyacent positions to se if the random generated room fits the rooms already generated
   for (int i = 0; i < 4; i++) {
-    if (!isPathValid(i, current.free_doors_[i])) {
+    Vec2 go_to = getAdjacentPosition(current_position_, i);
+    if (!grid_.posInGrid(go_to)) {
       res = false;
       break;
     }
-  }
-  if (res) {
     //delete free doors of connected rooms
-    for (int i = 0; i < 4; i++) {
-      Vec2 go_to = getAdjacentPosition(current_position_, i);
-      if (posInGrid(go_to)) {
-        RoomLayout& checking_room = getRoom(go_to);
-        if (checking_room.doors_[getOpositeDir(i)]) {
-          current.free_doors_[i] = false;
-          checking_room.free_doors_[getOpositeDir(i)] = false;
-        }
-      }
+    RoomLayout& checking_room = grid_.getRoom(go_to);
+    if(checking_room.valid()) {
+      current.doors_[i] = true;
+      current.free_doors_[i] = false;
+      checking_room.doors_[getOpositeDir(i)] = true;
+      checking_room.free_doors_[getOpositeDir(i)] = false;
     }
     curren_room_count_++;
     room_queue_.push(current_position_);
-  } else current.reset();
+  }
+  if (!res) current.reset();
   return res;
 }
 
@@ -85,4 +82,3 @@ void Generator::clear() {
   last_dir_ = -1;
   curren_room_count_ = 0;
 }
-
