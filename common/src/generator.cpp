@@ -13,8 +13,12 @@
  * \param room_count 
  * \param seed 
  */
-Generator::Generator(const int width, const int height,
-                     const int room_count, const int seed)
+Generator::Generator(
+  const int width,
+  const int height,
+  const int room_count,
+  const int seed
+)
   : grid_size_{width,height},
     last_dir_(-1),
     special_room_count_(0),
@@ -35,6 +39,15 @@ Generator::Generator(const int width, const int height,
   random_y_ = std::uniform_int_distribution(0, height - 1);
 }
 
+IsaacGenerator::IsaacGenerator(
+  int width,
+  int height,
+  int room_count,
+  int seed
+)
+  : Generator(width, height, room_count, seed) {
+  random_bool_ = std::uniform_int_distribution(0, 1);
+}
 
 bool Generator::findNextPosition() {
   if (current_position_ == start_position_ && room_queue_.empty()) {
@@ -64,6 +77,7 @@ bool Generator::findNextPosition() {
   if (ended()) return false;
   return true;
 }
+
 void Generator::clear() {
   for (auto& room_layout : maze_) {
     room_layout.reset();
@@ -73,12 +87,13 @@ void Generator::clear() {
   current_position_.reset();
   last_dir_ = -1;
   curren_room_count_ = 0;
-  
+
 }
 
 const RoomLayout& Generator::getRoom(const Vec2<int>& pos) const {
   return maze_.at(pos.x_ + pos.y_ * grid_size_.x_);
 }
+
 RoomLayout& Generator::getRoom(const Vec2<int>& pos) {
   return maze_.at(pos.x_ + pos.y_ * grid_size_.x_);
 }
@@ -117,11 +132,47 @@ bool Generator::placeRoom() {
   } else current.reset();
   return res;
 }
+
+bool IsaacGenerator::placeRoom() {
+  RoomLayout& current = getRoom(current_position_);
+  current.randomize_isaac(last_dir_, random_engine_, random_bool_);
+
+  bool res = true;
+  //check for all adyacent positions to se if the random generated room fits the rooms already generated
+  for (int i = 0; i < 4; i++) {
+    if (current.doors_[i]) {
+      Vec2 go_to = getAdjacentPosition(current_position_, i);
+      if (!posInGrid(go_to)) {
+        res = false;
+        break;
+      }
+
+      //delete free doors of connected rooms
+      RoomLayout& checking_room = getRoom(go_to);
+      if (checking_room.valid()) {
+        current.doors_[i] = true;
+        current.free_doors_[i] = false;
+        checking_room.doors_[getOpositeDir(i)] = true;
+        checking_room.free_doors_[getOpositeDir(i)] = false;
+      }
+    }
+  }
+
+
+  if (!res) current.reset();
+  else {
+    curren_room_count_++;
+    room_queue_.push(current_position_);
+  }
+  return res;
+}
+
+
 void Generator::findSpecialRoomCandidates() {
   for (int y = 0; y < grid_size_.y_; ++y) {
     for (int x = 0; x < grid_size_.x_; ++x) {
-      if(getRoom(Vec2<int>(x, y)).doors_.count() == 1 ) {
-        special_room_candidates_.push_back(Vec2<int>(x,y));
+      if (getRoom(Vec2<int>(x, y)).doors_.count() == 1) {
+        special_room_candidates_.push_back(Vec2<int>(x, y));
       }
     }
   }
@@ -131,7 +182,7 @@ void Generator::findSpecialRoomCandidates() {
   for (auto point1 : special_room_candidates_) {
     for (auto point2 : special_room_candidates_) {
       int distance = DistanceBetweenPoints(point1, point2);
-      if(distance >= res) {
+      if (distance >= res) {
         res = distance;
         specials[0] = point1;
         specials[2] = point2;
@@ -143,8 +194,8 @@ void Generator::findSpecialRoomCandidates() {
     int d1 = DistanceBetweenPoints(specials[0], point);
     int d2 = DistanceBetweenPoints(specials[2], point);
     float distance =
-      std::sqrtf(static_cast<float>(d1)) + std::sqrtf(static_cast<float>(d2));
-    if(distance >= ress) {
+        std::sqrtf(static_cast<float>(d1)) + std::sqrtf(static_cast<float>(d2));
+    if (distance >= ress) {
       ress = distance;
       specials[1] = point;
     }
@@ -154,6 +205,7 @@ void Generator::findSpecialRoomCandidates() {
     getRoom(special).special_ = true;
   }
 }
+
 void Generator::closeMaze() {
   for (auto& room : maze_) {
     if (room.free_doors_.any()) {

@@ -6,7 +6,7 @@
 #include "renderer.hpp"
 
 
-Generator generator(10, 10, 15, 1);
+IsaacGenerator generator(10, 10, 10, 1);
 
 int esat::main(int, char **) {
   WindowInit(500, 500);

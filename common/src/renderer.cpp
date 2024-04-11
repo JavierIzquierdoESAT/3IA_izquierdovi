@@ -5,16 +5,15 @@
 #include "generator.hpp"
 #include "room_layout.hpp"
 
-void Renderer::FetchRenderer(Generator& generator) {
-  Grid grid = generator.grid_;
-  auto grid_size = grid.getGridSize();
+void Renderer::FetchRenderer(const Generator& generator) {
+  auto grid_size = generator.getGridSize();
   size_ = grid_size;
   asset_grid_.clear();
   asset_grid_.reserve(grid_size.x_ * grid_size.y_);
   
   for (int y = 0; y < grid_size.y_; ++y) {
     for (int x = 0; x < grid_size.x_; ++x) {
-      const auto& room_layout = grid.getRoom(Vec2<int>(x,y));
+      const RoomLayout& room_layout = generator.getRoom(Vec2<int>(x,y));
       int i = 0;
       std::bitset<4> mask;
       switch (room_layout.doors_.count()) {
@@ -60,11 +59,10 @@ void Renderer::FetchRenderer(Generator& generator) {
   }
 }
 
-void Renderer::render(Generator& generator) const{
-  Grid& grid = generator.grid_;
+void Renderer::render(const Generator& generator) const{
   for (int y = 0; y < size_.y_; ++y) {
     for (int x = 0; x < size_.x_; ++x) {
-      const RoomLayout& room = grid.getRoom(Vec2<int>(x, y));
+      const RoomLayout& room = generator.getRoom(Vec2<int>(x, y));
       const Level& level = asset_grid_[x + y * size_.x_];
       esat::SpriteTransform t = esat::SpriteTransform();
       SpriteTransformInit(&t);

@@ -34,6 +34,24 @@ void RoomLayout::randomize(int in_direction,
     free_doors_[in_direction] = true;
   }
 }
+
+void RoomLayout::randomize_isaac(
+  int in_direction,
+  std::default_random_engine& random_engine,
+  const std::uniform_int_distribution<int>& random_bool
+) {
+
+  for (int i = 0; i < 4; ++i) {
+    doors_[i] = random_bool(random_engine);
+  }
+  free_doors_ = doors_;
+  if(in_direction != -1) {
+    doors_[in_direction] = true;
+    free_doors_[in_direction] = true;
+  }
+}
+
+
 void RoomLayout::reset() {
   doors_.reset();
   free_doors_.reset();

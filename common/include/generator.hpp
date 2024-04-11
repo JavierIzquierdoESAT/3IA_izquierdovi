@@ -9,31 +9,27 @@
 class Generator {
 public:
   Generator(int width, int height, int room_count, int seed = 0);
-  
+  virtual ~Generator() = default;
+
   bool findNextPosition();
-  bool placeRoom();
+  virtual bool placeRoom();
 
   void findSpecialRoomCandidates();
   void closeMaze();
 
-  bool ended() const{return room_count_ == curren_room_count_;}
+  bool ended() const { return curren_room_count_ >= room_count_; }
   void clear();
 
   const RoomLayout& getRoom(const Vec2<int>& pos) const;
-  const Vec2<int>& getGridSize() const {return grid_size_;}
+  const Vec2<int>& getGridSize() const { return grid_size_; }
 
-  
-  
-  
-  
-
-private:
+protected:
   bool posInGrid(const Vec2<int>& pos) const;
   RoomLayout& getRoom(const Vec2<int>& pos);
   bool isPathValid(int direction, bool has_going_path);
 
   std::vector<RoomLayout> maze_;
-  
+
   Vec2<int> grid_size_;
   Vec2<int> start_position_;
   Vec2<int> current_position_;
@@ -50,6 +46,15 @@ private:
   std::uniform_int_distribution<int> random_rotation_;
   std::uniform_int_distribution<int> random_x_;
   std::uniform_int_distribution<int> random_y_;
-  
+
 };
 
+
+class IsaacGenerator : public Generator {
+public:
+  IsaacGenerator(int width, int height, int room_count, int seed = 0);
+
+  bool placeRoom() override;
+private:
+  std::uniform_int_distribution<int> random_bool_;
+};

@@ -10,8 +10,8 @@ class Renderer{
 public:
   Renderer() = default;
 
-  void FetchRenderer(Generator& generator);
-  void render(Generator& grid) const;
+  void FetchRenderer(const Generator& generator);
+  void render(const Generator& grid) const;
 
 private:
   std::vector<Level> asset_grid_;
