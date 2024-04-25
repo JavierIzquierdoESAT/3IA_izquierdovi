@@ -33,7 +33,7 @@ Generator::Generator(
   }
 
   random_engine_ = std::default_random_engine(seed_);
-  random_door_count_ = std::discrete_distribution({25,25,25,25});
+  random_door_count_ = std::discrete_distribution({1,1,1,1});
   random_rotation_ = std::uniform_int_distribution(1, 3);
   random_x_ = std::uniform_int_distribution(0, width - 1);
   random_y_ = std::uniform_int_distribution(0, height - 1);
