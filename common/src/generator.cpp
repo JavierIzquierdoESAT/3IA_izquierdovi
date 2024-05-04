@@ -176,6 +176,9 @@ void Generator::findSpecialRoomCandidates() {
       }
     }
   }
+  if(special_room_candidates_.size() < 3) {
+    //restart
+  }
 
   std::array<Vec2<int>, 3> specials;
   int res = 0;
@@ -201,9 +204,10 @@ void Generator::findSpecialRoomCandidates() {
     }
   }
 
-  for (auto special : specials) {
-    getRoom(special).special_ = true;
-  }
+  //set special room type
+  getRoom(specials[0]).special_ = 1;
+  getRoom(specials[1]).special_ = 3;
+  getRoom(specials[2]).special_ = 2;
 }
 
 void Generator::closeMaze() {

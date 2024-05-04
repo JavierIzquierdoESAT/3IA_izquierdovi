@@ -6,7 +6,7 @@
 #include "esat/input.h"
 #include "esat/time.h"
 
-Generator generator(12, 12, 30, 1);
+Generator generator(12, 12, 30);
 
 int esat::main(int, char **) {
   WindowInit(500, 500);

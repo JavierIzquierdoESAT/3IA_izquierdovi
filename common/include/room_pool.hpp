@@ -7,7 +7,9 @@
 
 enum RoomType {
   kNone = -1,
-  kSpecial = 0,
+  kStart = 0,
+  kEnd,
+  kShop,
   kDeadEnd,
   kCorridor,
   kTurn,
@@ -24,9 +26,9 @@ struct Level {
 };
 
 inline const std::array starting_rooms_ = {
-  Level(kSpecial,   "../../../assets/Start.png"),
-  Level(kSpecial,   "../../../assets/Boss.png"),
-  Level(kSpecial,   "../../../assets/Shop.png"),
+  Level(kStart,   "../../../assets/Start.png"),
+  Level(kEnd,   "../../../assets/Boss.png"),
+  Level(kShop,   "../../../assets/Shop.png"),
   Level(kDeadEnd,   "../../../assets/AEnd.png"),
   Level(kDeadEnd,   "../../../assets/BEnd.png"),
   Level(kDeadEnd,   "../../../assets/CEnd.png"),

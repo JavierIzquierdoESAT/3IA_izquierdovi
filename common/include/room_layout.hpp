@@ -23,5 +23,6 @@ public:
 
   std::bitset<4> doors_;
   std::bitset<4> free_doors_;
-  bool special_ = false;
+  int special_ = 0;
+  
 };
